@@ -1,0 +1,28 @@
+{
+  "name": "book-author-api-gateway",
+  "version": "1.0.0",
+  "description": "API Gateway GraphQL pour les microservices de livres et d'auteurs",
+  "main": "apiGateway.js",
+  "scripts": {
+    "start": "node apiGateway.js",
+    "dev": "nodemon apiGateway.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.12.0",
+    "@grpc/grpc-js": "^1.13.3",
+    "@grpc/proto-loader": "^0.7.15",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "graphql": "^16.11.0",
+    "graphql-tag": "^2.12.6",
+    "kafkajs": "^2.2.4",
+    "mongoose": "^8.14.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
