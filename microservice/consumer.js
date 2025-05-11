@@ -10,10 +10,9 @@ const consumeMessages = async (topic) => {
     eachMessage: async ({ topic, partition, message }) => {
       console.log(`Message reçu du topic ${topic}: ${message.value.toString()}`);
 
-      // Traite le message (par exemple, afficher les informations du livre ou de l'auteur)
+      // Traite le message 
       const messageData = JSON.parse(message.value.toString());
       console.log('Traitement du message:', messageData);
-      // Ici tu peux mettre à jour ou afficher des informations supplémentaires
     },
   });
 };

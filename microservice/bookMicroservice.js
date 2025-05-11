@@ -3,6 +3,7 @@ const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
 const connectDB = require('./config/database');
 const Book = require('./models/Book');
+const { sendMessage, connectProducer } = require('./producer');
 require('dotenv').config();
 
 // Configuration du protobuf
@@ -20,6 +21,8 @@ const bookProto = grpc.loadPackageDefinition(bookProtoDefinition).book;
 // Connexion à MongoDB
 connectDB();
 
+// Connexion à Kafka
+connectProducer().catch(console.error);
 
 const bookService = {
     getBook: async (call, callback) => {

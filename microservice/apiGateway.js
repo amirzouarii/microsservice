@@ -196,8 +196,7 @@ async function startServer() {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
         console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
-        console.log(`📚 GraphQL disponible sur /graphql`);
-        console.log(`📖 REST API disponible sur /api/books et /api/authors`);
+      
     });
 }
 

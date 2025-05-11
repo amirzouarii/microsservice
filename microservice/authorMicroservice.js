@@ -3,6 +3,8 @@ const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
 const connectDB = require('./config/database');
 const Author = require('./models/Author');
+const { sendMessage, connectProducer } = require('./producer');
+
 require('dotenv').config();
 
 // Configuration du protobuf
@@ -19,6 +21,10 @@ const authorProto = grpc.loadPackageDefinition(authorProtoDefinition).author;
 
 // Connexion à MongoDB
 connectDB();
+
+
+connectProducer().catch(console.error);
+
 
 
 
@@ -81,31 +87,42 @@ const authorService = {
     addAuthor: async (call, callback) => {
         try {
             const authorData = call.request.author;
+    
             const newAuthor = new Author({
                 name: authorData.name,
                 bio: authorData.bio || ''
             });
-
+    
             const savedAuthor = await newAuthor.save();
-
-             // Envoi du message à Kafka
-      await sendMessage('authors_topic', savedAuthor);  // Envoie l'auteur créé au topic 'authors_topic'
-
-            // Conversion explicite de l'ID en chaîne
+    
+            // Envoi du message à Kafka avec gestion d'erreur
+            try {
+                await sendMessage('authors_topic', savedAuthor);
+            } catch (kafkaError) {
+                console.error("Erreur Kafka:", kafkaError);
+                return callback({
+                    code: grpc.status.INTERNAL,
+                    message: "Erreur lors de l'envoi du message Kafka"
+                });
+            }
+    
             const authorResponse = {
-                id: savedAuthor._id.toString(), // Conversion de l'ID en chaîne
+                id: savedAuthor._id.toString(),
                 name: savedAuthor.name,
                 bio: savedAuthor.bio
             };
-
+    
             callback(null, { author: authorResponse });
         } catch (error) {
+            console.error("Erreur lors de l'ajout de l'auteur:", error);
             callback({
                 code: grpc.status.INTERNAL,
-                message: 'Erreur lors de l\'ajout de l\'auteur'
+                message: "Erreur lors de l'ajout de l'auteur"
             });
         }
     }
+    
+
 };
 
 
